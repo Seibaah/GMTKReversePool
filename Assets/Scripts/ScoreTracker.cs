@@ -4,28 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 public class ScoreTracker : MonoBehaviour
 {
     // UI
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI multiplierText;
-    
+    public TextMeshProUGUI plusOneText;
+
     // Timer
     public Slider timerSlider;
     public float timeScale = 0.1f;
+    public bool isPolling;
     
     // Lives
     public int numLives;
     public int ballsJustHitIn;
+    public GameObject life1;
+    public GameObject life2;
+    public GameObject life3;
 
-    // Testing purposes
-    private int _counter;
-    private Random rnd;
-    
     // Score, multiplier
     public static int Score;
     public static int Multiplier;
@@ -35,6 +35,7 @@ public class ScoreTracker : MonoBehaviour
     public GameOverScreen gameOverScreen;
     public bool isGameOver;
 
+    // Colors for Multiplier
     private readonly Dictionary<int, Color> _colorThresholds = new()
     {
         { 1, Color.white },                            // White to start
@@ -67,35 +68,64 @@ public class ScoreTracker : MonoBehaviour
         scoreText.text = "0";
         multiplierText.text = "";
         numLives = 3;
+        isPolling = true;
     }
     
     private void FixedUpdate()
     {
-        var timeToDecrement = timeScale * Time.deltaTime;
+        var timeToDecrement = isPolling ? timeScale * Time.deltaTime : 0;
         timerSlider.value -= timeToDecrement;
-        
-        // TODO Change slider
-        if (timerSlider.value <= 0f)
+        if (timerSlider.value <= 0.0f)
         {
-            LoseALife();
-            timerSlider.value = 1f;
+            Multiplier = 1;
+            if (numLives >= 2)
+            {
+                timerSlider.value = 1f;
+            }
+            StartCoroutine(LoseMultiplier());
+            StartCoroutine(LoseALife());
         }
     }
 
     public void PlayShot()
-    {
-        ballsJustHitIn = rnd.Next(0, 3);
-        Debug.Log("Balls hit in: " + ballsJustHitIn);
+    { 
+        ballsJustHitIn = Random.Range(0, 3);
+        print("Amount of balls hit in: " + ballsJustHitIn);
+        if (ballsJustHitIn == 0)
+        {
+            Multiplier = 1;
+            StartCoroutine(LoseMultiplier());
+            StartCoroutine(LoseALife());
+        }
+        else
+        {
+            var totalScore = timerSlider.value * 100;
+            Score += (int) totalScore * Multiplier;
+            scoreText.text = Score.ToString();
+            Multiplier += ballsJustHitIn;
+            multiplierText.text = "x" + Multiplier;
+            StartCoroutine(MultiplierActivated(ballsJustHitIn));
+        }
+        timerSlider.value = 1f;
     }
 
-    private void LoseALife()
+    private IEnumerator LoseALife()
     {
         numLives -= 1;
-        // Animation
-        if (numLives == 0)
+        switch (numLives)
         {
-            GameOver();
+            case 2:
+                life3.GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.2f, false);
+                break;
+            case 1:
+                life2.GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.2f, false);
+                break;
+            case 0:
+                life1.GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.2f, false);
+                GameOver();
+                break;
         }
+        yield return null;
     }
 
     private void CheckPlayTickingSound()
@@ -105,8 +135,34 @@ public class ScoreTracker : MonoBehaviour
             // Play the looping ticking sound
         }
     }
+
+    private IEnumerator LoseMultiplier()
+    {
+        multiplierText.text = "x0";
+        multiplierText.color = Color.red;
+        
+        // Fade in the text instantly (since it's faded out from before)
+        multiplierText.CrossFadeAlpha(1.0f, 0.0f, false);
+        
+        // Fade out the text
+        multiplierText.CrossFadeAlpha(0.0f, 0.5f, false);
+        
+        // Make it x1 again
+        multiplierText.text = "x" + Multiplier;
+        multiplierText.CrossFadeAlpha(1.0f, 0.0f, false);
+        
+        // For plus one
+        plusOneText.text = "-";
+        plusOneText.color = Color.red;
+        // Fade in the text instantly (since it's faded out from before)
+        plusOneText.CrossFadeAlpha(1.0f, 0.0f, false);
+        
+        // Fade out the text
+        plusOneText.CrossFadeAlpha(0.0f, 0.5f, false);
+        yield return null;
+    }
     
-    private IEnumerator MultiplierActivated()
+    private IEnumerator MultiplierActivated(int ballsHitIn)
     {
         var elapsedTime = 0f;
         var setActive = false;
@@ -116,7 +172,18 @@ public class ScoreTracker : MonoBehaviour
             multiplierText.color = threshold.Value;
             break;
         }
-        while (elapsedTime < 0.2f)
+
+        if (ballsHitIn != 0)
+        {
+            plusOneText.text = "+" + ballsHitIn;
+            // Fade in the text instantly (since it's faded out from before)
+            plusOneText.CrossFadeAlpha(1.0f, 0.0f, false);
+        
+            // Fade out the text
+            plusOneText.CrossFadeAlpha(0.0f, 0.5f, false);
+        }
+
+        while (elapsedTime < 0.4f)
         {
             scoreText.gameObject.SetActive(setActive);
             multiplierText.gameObject.SetActive(setActive);
@@ -134,9 +201,7 @@ public class ScoreTracker : MonoBehaviour
     private void GameOver()
     {
         isGameOver = true;
-        // Set level text to white
         scoreText.color = Color.white;
-        multiplierText.gameObject.SetActive(false);
         
         gameOverScreen.Setup(Score);
     }
