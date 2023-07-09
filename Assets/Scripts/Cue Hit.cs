@@ -60,6 +60,9 @@ public class CueHit : MonoBehaviour
     void FixedUpdate()
     {
         //Debug.Log("CurAngle: " + transform.rotation.eulerAngles.y);
+        // For paused scenarios (Static variable)
+        if (PauseMenu.IsPaused || TutorialMenu.IsTutorial) return;
+        
         if (isFadingIn)
         {
             //TODO make this start once the cue ball has stopped
