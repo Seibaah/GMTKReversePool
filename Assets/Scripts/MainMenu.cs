@@ -69,7 +69,7 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("UICanvas");
+        SceneManager.LoadScene("Gameplay Test");
     }
 
     public void MusicVolumeSlider(float volume)

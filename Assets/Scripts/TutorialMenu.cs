@@ -19,8 +19,6 @@ public class TutorialMenu : MonoBehaviour
         else
         {
             tutorialMenu.SetActive(false);
-            // TODO Uncomment on final build (this is used for testing purposes)
-            PlayerPrefs.SetInt("HasDoneTutorial", 0);
         }
     }
 

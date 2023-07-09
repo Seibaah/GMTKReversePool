@@ -17,7 +17,7 @@ public class GameOverScreen : MonoBehaviour
 
     public void RestartButton()
     {
-        SceneManager.LoadScene("UICanvas");
+        SceneManager.LoadScene("Gameplay Test");
     }
     
     public void ExitButton()

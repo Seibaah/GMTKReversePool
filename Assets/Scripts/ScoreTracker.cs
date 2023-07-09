@@ -48,9 +48,6 @@ public class ScoreTracker : MonoBehaviour
         { 6, new Color(0.9f, 0.75f, 1f) },      // Light purple
         { 7, new Color(0.75f, 0.75f, 1f) },     // Light blue
     };
-    
-    // For playtime
-    // IsHitting = false, 
 
     // Singleton instance
     public static ScoreTracker Instance { get; private set; }
@@ -87,6 +84,7 @@ public class ScoreTracker : MonoBehaviour
             if (numLives >= 2)
             {
                 timerSlider.value = 1f;
+                ballsJustHitIn = 0;
             }
             StartCoroutine(LoseMultiplier());
             StartCoroutine(LoseALife());
@@ -95,24 +93,33 @@ public class ScoreTracker : MonoBehaviour
 
     public void PlayShot()
     { 
-        ballsJustHitIn = Random.Range(0, 3);
-        print("Amount of balls hit in: " + ballsJustHitIn);
-        if (ballsJustHitIn == 0)
-        {
-            Multiplier = 1;
-            StartCoroutine(LoseMultiplier());
-            StartCoroutine(LoseALife());
-        }
-        else
-        {
-            var totalScore = timerSlider.value * 100;
-            Score += (int) totalScore * Multiplier;
-            scoreText.text = Score.ToString();
-            Multiplier += ballsJustHitIn;
-            multiplierText.text = "x" + Multiplier;
-            StartCoroutine(MultiplierActivated(ballsJustHitIn));
-        }
+        // ballsJustHitIn = Random.Range(0, 3);
+        // print("Amount of balls hit in: " + ballsJustHitIn);
+        // if (ballsJustHitIn == 0)
+        // {
+        //     Multiplier = 1;
+        //     StartCoroutine(LoseMultiplier());
+        //     StartCoroutine(LoseALife());
+        // }
+        // else
+        // {
+        //     var totalScore = timerSlider.value * 100;
+        //     Score += (int) totalScore * Multiplier;
+        //     scoreText.text = Score.ToString();
+        //     Multiplier += ballsJustHitIn;
+        //     multiplierText.text = "x" + Multiplier;
+        //     StartCoroutine(MultiplierActivated(ballsJustHitIn));
+        // }
+        // timerSlider.value = 1f;
+        
+        var totalScore = timerSlider.value * 100;
+        Score += (int) totalScore * Multiplier;
+        scoreText.text = Score.ToString();
+        Multiplier += ballsJustHitIn;
+        multiplierText.text = "x" + Multiplier;
+        StartCoroutine(MultiplierActivated(ballsJustHitIn));
         timerSlider.value = 1f;
+        ballsJustHitIn = 0;
     }
 
     private int _mIndexSprite;
