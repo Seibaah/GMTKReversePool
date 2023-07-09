@@ -6,6 +6,11 @@ public class SphereHit : MonoBehaviour
 {
     public float hitPower = 1100f;
     public bool wasHit = true;
+    public Material mat;
+    float fadeSpeed = 2f;
+    public bool isFadingOut;
+    public bool isFadingIn;
+    public bool isInPocket;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -26,7 +31,14 @@ public class SphereHit : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Entered Pocket");
+        if (other.gameObject.tag == "Hole")
+        {
+            Debug.Log("Entered Pocket");
+            gameObject.GetComponent<Collider>().enabled = false;
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            isFadingOut = true;
+            isInPocket = true;
+        }
     }
 
     void FixedUpdate()
@@ -40,6 +52,45 @@ public class SphereHit : MonoBehaviour
         {
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             hitPower = 1100f;
+        }
+
+        if (isFadingOut)
+        {
+            Fade("out");
+        }
+        else if (isFadingIn)
+        {
+            Fade("in");
+        }
+    }
+
+    void Fade(string mode)
+    {
+        if (mode == "out")
+        {
+            gameObject.GetComponent<Collider>().isTrigger = true;
+            var col = mat.color;
+            float fadeAmount = col.a - (fadeSpeed * Time.deltaTime);
+            var newCol = new Color(col.r, col.g, col.b, fadeAmount);
+
+            mat.color = newCol;
+            if (col.a <= 0)
+            {
+                isFadingOut = false;
+            }
+        }
+        else if (mode == "in")
+        {
+            gameObject.GetComponent<Collider>().isTrigger = false;
+            var col = mat.color;
+            float fadeAmount = col.a + (fadeSpeed * Time.deltaTime);
+            var newCol = new Color(col.r, col.g, col.b, fadeAmount);
+
+            mat.color = newCol;
+            if (col.a >= 1)
+            {
+                isFadingIn = false;
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ public class CueHit : MonoBehaviour
     public bool isShooting;
     public bool isFadingOut;
     public bool isResting;
+    public bool isWaitingForSpawn;
 
     public GameObject cueBall; //our pivot
     public float hitAngle = 0f;
@@ -34,6 +35,7 @@ public class CueHit : MonoBehaviour
     public GameObject tip;
     public LineRenderer lr;
     public Vector3 lrDir;
+    public Spawner sp;
 
     void Start()
     {
@@ -166,8 +168,14 @@ public class CueHit : MonoBehaviour
             if (cueBall.gameObject.GetComponent<Rigidbody>().velocity == Vector3.zero) 
             {
                 isResting = false;
-                isFadingIn = true;
+                isWaitingForSpawn = true;
             }
+        }
+        else if (isWaitingForSpawn)
+        {
+            sp.SpawnMissingBalls();
+            isWaitingForSpawn = false;
+            isFadingIn = true;
         }
     }
 
