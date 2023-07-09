@@ -38,6 +38,11 @@ public class SphereHit : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             isFadingOut = true;
             isInPocket = true;
+            
+            // Increase counter
+            ScoreTracker.Instance.ballsJustHitIn += 1;
+            print(ScoreTracker.Instance.ballsJustHitIn);
+            ScoreTracker.Instance.PlayShot();
         }
     }
 
