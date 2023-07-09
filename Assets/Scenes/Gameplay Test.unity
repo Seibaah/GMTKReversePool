@@ -11022,7 +11022,7 @@ MonoBehaviour:
   multiplierText: {fileID: 1809767514}
   plusOneText: {fileID: 1983510371}
   timerSlider: {fileID: 1641992560}
-  timeScale: 0.03
+  timeScale: 0.02
   isPolling: 0
   numLives: 0
   ballsJustHitIn: 0
@@ -11388,7 +11388,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -200, y: 0}
+  m_AnchoredPosition: {x: -200, y: 7}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &2084563133
