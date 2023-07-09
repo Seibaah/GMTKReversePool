@@ -71,6 +71,8 @@ public class ScoreTracker : MonoBehaviour
         multiplierText.text = "";
         numLives = 3;
         isPolling = true;
+        Multiplier = 1;
+        Score = 0;
     }
 
     private void FixedUpdate()
