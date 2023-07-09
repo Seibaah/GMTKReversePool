@@ -49,6 +49,9 @@ public class ScoreTracker : MonoBehaviour
         { 7, new Color(0.75f, 0.75f, 1f) },     // Light blue
     };
     
+    // For playtime
+    // IsHitting = false, 
+
     // Singleton instance
     public static ScoreTracker Instance { get; private set; }
     
@@ -76,7 +79,6 @@ public class ScoreTracker : MonoBehaviour
     private void FixedUpdate()
     {
         if (PauseMenu.IsPaused || TutorialMenu.IsTutorial) return;
-        
         var timeToDecrement = isPolling ? timeScale * Time.deltaTime : 0;
         timerSlider.value -= timeToDecrement;
         if (timerSlider.value <= 0.0f)
@@ -155,14 +157,6 @@ public class ScoreTracker : MonoBehaviour
             // Fade out the text
             heart.CrossFadeAlpha(0.0f, 0.5f, false);
             _mIndexSprite = 0;
-        }
-    }
-
-    private void CheckPlayTickingSound()
-    {
-        while (timerSlider.value <= 0.2f)
-        {
-            // Play the looping ticking sound
         }
     }
 
