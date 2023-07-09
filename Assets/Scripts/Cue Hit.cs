@@ -15,11 +15,12 @@ public class CueHit : MonoBehaviour
     public bool isShooting;
     public bool isFadingOut;
     public bool isResting;
+    public bool isWaitingForSpawn;
 
     public GameObject cueBall; //our pivot
     public float hitAngle = 0f;
     public float tolerance = 10f;
-    Vector3 dir;
+    public Vector3 dir;
 
     float t0;
     float pauseTime = 1f;
@@ -32,6 +33,9 @@ public class CueHit : MonoBehaviour
     public Renderer renderer;
     public GameObject stick;
     public GameObject tip;
+    public LineRenderer lr;
+    public Vector3 lrDir;
+    public Spawner sp;
 
     void Start()
     {
@@ -40,26 +44,22 @@ public class CueHit : MonoBehaviour
 
     void Update()
     {
-        //Debug.DrawRay(transform.position, (cueBall.transform.position - transform.position).normalized,
-        //    Color.red, 1);
-/*
-        if (Input.GetKeyDown("space"))
+        if (lr.enabled == true)
         {
-            Debug.Log("Shoot");
-            isShooting = true;
-            dir = (cueBall.transform.position - transform.position).normalized;
-            hitT0 = Time.time;
+            RaycastHit hit;
+            if (Physics.Raycast(cueBall.transform.position, lrDir, out hit, Mathf.Infinity))
+            {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+
+                lr.SetPosition(0, new Vector3(cueBall.transform.position.x, 1.2f, cueBall.transform.position.z));
+                lr.SetPosition(1, new Vector3(hit.point.x, 1.2f, hit.point.z));
+            }
         }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            var col = renderer.material.color;
-            gameObject.transform.position -= new Vector3(0f, 2f, 0f);
-            renderer.material.color = new Color(col.r, col.g, col.b, 1f);
-        }*/
     }
 
     void FixedUpdate()
     {
+        //Debug.Log("CurAngle: " + transform.rotation.eulerAngles.y);
         // For paused scenarios (Static variable)
         if (PauseMenu.IsPaused || TutorialMenu.IsTutorial) return;
         
@@ -73,14 +73,43 @@ public class CueHit : MonoBehaviour
         }
         else if (isDeciding)
         {
-            hitAngle = UnityEngine.Random.Range(0, 360);
+            hitAngle = UnityEngine.Random.Range(0, 359);
             isDeciding = false;
             isRotating = true;
-            //Debug.Log("ANGLE: " + hitAngle);
+            Debug.Log("ANGLE: " + hitAngle);
+
+            int quadrant = (int)(hitAngle / 90);
+            Debug.Log("Quadrant " + quadrant);
+
+            float x, z;
+            if (quadrant == 0)
+            {
+                z = Mathf.Cos((hitAngle) * Mathf.PI / 180);
+                x = Mathf.Sin((hitAngle) * Mathf.PI / 180);
+            }
+            else if (quadrant == 1)
+            {
+                x = Mathf.Cos((hitAngle - 90) * Mathf.PI / 180);
+                z = - Mathf.Sin((hitAngle - 90) * Mathf.PI / 180);
+            }
+            else if (quadrant == 2)
+            {
+                z = - Mathf.Cos((hitAngle - 180) * Mathf.PI / 180);
+                x = - Mathf.Sin((hitAngle - 180) * Mathf.PI / 180);
+            }
+            else
+            {
+                x = - Mathf.Cos((hitAngle - 270) * Mathf.PI / 180);
+                z = Mathf.Sin((hitAngle - 270) * Mathf.PI / 180);
+            }
+
+
+            lrDir = (new Vector3(cueBall.transform.position.x + x, 1.2f, cueBall.transform.position.z + z) 
+                - new Vector3(cueBall.transform.position.x, 1.2f, cueBall.transform.position.z)).normalized;
+            lr.enabled = true;
         }
         else if (isRotating)
         {
-            Debug.Log("CurAngle: " + transform.rotation.eulerAngles.y);
             if (transform.rotation.eulerAngles.y % 360 > hitAngle - tolerance &&
                 transform.rotation.eulerAngles.y % 360 < hitAngle + tolerance)
             {
@@ -116,6 +145,8 @@ public class CueHit : MonoBehaviour
         }
         else if (isShooting)
         {
+            lr.enabled = false;
+
             transform.Translate(dir.normalized * hitSpeed * Time.deltaTime, Space.World);
             
             if (Time.time - t0 > hitTime)
@@ -137,11 +168,17 @@ public class CueHit : MonoBehaviour
         }
         else if (isResting)
         {
-            if (Time.time - t0 < restTime)
+            if (cueBall.gameObject.GetComponent<Rigidbody>().velocity == Vector3.zero) 
             {
                 isResting = false;
-                isFadingIn = true;
+                isWaitingForSpawn = true;
             }
+        }
+        else if (isWaitingForSpawn)
+        {
+            sp.SpawnMissingBalls();
+            isWaitingForSpawn = false;
+            isFadingIn = true;
         }
     }
 

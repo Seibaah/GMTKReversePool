@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Cue Stick
   - Side Rail
+  - Hole
+  - Ball
   layers:
   - Default
   - TransparentFX
@@ -13,10 +15,10 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Cue Stick
+  - Cue Ball
+  - Balls
+  - Pocket
   - 
   - 
   - 

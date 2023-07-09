@@ -13,6 +13,7 @@ public class MouseControl : MonoBehaviour
 
         // Store offset = gameobject world pos - mouse world pos
         mOffset = gameObject.transform.position - GetMouseAsWorldPoint();
+        gameObject.GetComponent<Collider>().enabled = false;
     }
 
     private Vector3 GetMouseAsWorldPoint()
@@ -27,6 +28,21 @@ public class MouseControl : MonoBehaviour
 
     void OnMouseDrag()
     {
-        transform.position = GetMouseAsWorldPoint() + mOffset;
+        var mousePos = GetMouseAsWorldPoint();
+        if (mousePos.x > 8.45 || mousePos.x < -8.45 
+            || mousePos.z > -6.45 || mousePos.z < -13.66)
+        {
+            OnMouseUp();
+        }
+        else
+        {
+            transform.position = mousePos + mOffset;
+            //Debug.Log("X: " + mousePos.x + "Z:" + mousePos.z);
+        }
+    }
+
+    void OnMouseUp()
+    {
+        gameObject.GetComponent<Collider>().enabled = true;
     }
 }
