@@ -40,9 +40,12 @@ public class SphereHit : MonoBehaviour
             isInPocket = true;
             
             // Increase counter
-            ScoreTracker.Instance.ballsJustHitIn += 1;
-            print(ScoreTracker.Instance.ballsJustHitIn);
-            ScoreTracker.Instance.PlayShot();
+            if (gameObject.transform.name != "Cue Ball")
+            {
+                ScoreTracker.Instance.ballsJustHitIn += 1;
+                print(ScoreTracker.Instance.ballsJustHitIn);
+                ScoreTracker.Instance.PlayShot();
+            }
         }
     }
 
