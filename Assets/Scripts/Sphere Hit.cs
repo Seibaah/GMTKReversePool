@@ -25,7 +25,7 @@ public class SphereHit : MonoBehaviour
             Debug.DrawRay(collision.gameObject.transform.position, (gameObject.transform.position - collision.gameObject.transform.position).normalized, Color.green, 10);
             var dir = (gameObject.transform.position - collision.gameObject.transform.position).normalized;
             gameObject.GetComponent<Rigidbody>().AddForce(dir * (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude) * 25f);
-            collision.gameObject.GetComponent<Rigidbody>().velocity *= 0.5f;
+            collision.gameObject.GetComponent<Rigidbody>().velocity *= 0.75f;
         }
     }
 
