@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -25,12 +26,13 @@ public class ScoreTracker : MonoBehaviour
     public GameObject life1;
     public GameObject life2;
     public GameObject life3;
+    public Sprite[] spriteArray;
 
     // Score, multiplier
     public static int Score;
     public static int Multiplier;
     private Coroutine _multiplierCoroutine;
-    
+
     // Game Over Screen
     public GameOverScreen gameOverScreen;
     public bool isGameOver;
@@ -73,6 +75,8 @@ public class ScoreTracker : MonoBehaviour
     
     private void FixedUpdate()
     {
+        if (PauseMenu.IsPaused || TutorialMenu.IsTutorial) return;
+        
         var timeToDecrement = isPolling ? timeScale * Time.deltaTime : 0;
         timerSlider.value -= timeToDecrement;
         if (timerSlider.value <= 0.0f)
@@ -109,23 +113,49 @@ public class ScoreTracker : MonoBehaviour
         timerSlider.value = 1f;
     }
 
+    private int _mIndexSprite;
+    private Coroutine _mCoroutineAnimation1;
+
     private IEnumerator LoseALife()
     {
         numLives -= 1;
+        // Check if the previous animation coroutine is still running
         switch (numLives)
         {
             case 2:
-                life3.GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.2f, false);
+                _mCoroutineAnimation1 = StartCoroutine(PlayAnimation(life3.GetComponent<Image>()));
                 break;
             case 1:
-                life2.GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.2f, false);
-                break;
+                _mCoroutineAnimation1 = StartCoroutine(PlayAnimation(life2.GetComponent<Image>()));                break;
             case 0:
-                life1.GetComponent<RawImage>().CrossFadeAlpha(0.0f, 0.2f, false);
+                _mCoroutineAnimation1 = StartCoroutine(PlayAnimation(life1.GetComponent<Image>()));
+                yield return new WaitForSeconds(1f);
                 GameOver();
                 break;
         }
         yield return null;
+    }
+
+    private IEnumerator PlayAnimation(Image heart)
+    {
+        yield return new WaitForSeconds(0.05f);
+        if (_mIndexSprite >= spriteArray.Length)
+        {
+            _mIndexSprite = 0;
+        }
+
+        heart.sprite = spriteArray[_mIndexSprite];
+        _mIndexSprite += 1;
+        if (_mIndexSprite != 6)
+        {
+            _mCoroutineAnimation1 = StartCoroutine(PlayAnimation(heart));
+        }
+        else
+        {
+            // Fade out the text
+            heart.CrossFadeAlpha(0.0f, 0.5f, false);
+            _mIndexSprite = 0;
+        }
     }
 
     private void CheckPlayTickingSound()
