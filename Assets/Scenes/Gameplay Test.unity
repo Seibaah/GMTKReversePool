@@ -11022,7 +11022,7 @@ MonoBehaviour:
   multiplierText: {fileID: 1809767514}
   plusOneText: {fileID: 1983510371}
   timerSlider: {fileID: 1641992560}
-  timeScale: 0.03
+  timeScale: 0.5
   isPolling: 0
   numLives: 0
   ballsJustHitIn: 0

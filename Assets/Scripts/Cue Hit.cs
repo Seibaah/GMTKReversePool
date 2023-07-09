@@ -61,7 +61,7 @@ public class CueHit : MonoBehaviour
     {
         //Debug.Log("CurAngle: " + transform.rotation.eulerAngles.y);
         // For paused scenarios (Static variable)
-        if (PauseMenu.IsPaused || TutorialMenu.IsTutorial) return;
+        if (PauseMenu.IsPaused || TutorialMenu.IsTutorial || GameOverScreen.IsGameOver) return;
         
         if (isFadingIn)
         {

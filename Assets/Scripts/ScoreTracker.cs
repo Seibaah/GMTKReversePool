@@ -72,10 +72,11 @@ public class ScoreTracker : MonoBehaviour
         numLives = 3;
         isPolling = true;
     }
-    
+
     private void FixedUpdate()
     {
-        if (PauseMenu.IsPaused || TutorialMenu.IsTutorial) return;
+        if (PauseMenu.IsPaused || TutorialMenu.IsTutorial || GameOverScreen.IsGameOver) return;
+
         var timeToDecrement = isPolling ? timeScale * Time.deltaTime : 0;
         timerSlider.value -= timeToDecrement;
         if (timerSlider.value <= 0.0f)
