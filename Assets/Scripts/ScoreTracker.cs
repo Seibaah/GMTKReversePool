@@ -94,6 +94,18 @@ public class ScoreTracker : MonoBehaviour
         }
     }
 
+    public void CueBallSunk()
+    {
+        Multiplier = 1;
+        if (numLives >= 1)
+        {
+            timerSlider.value = 1f;
+            ballsJustHitIn = 0;
+        }
+        StartCoroutine(LoseMultiplier());
+        StartCoroutine(LoseALife());
+    }
+
     public void PlayShot()
     { 
         // ballsJustHitIn = Random.Range(0, 3);

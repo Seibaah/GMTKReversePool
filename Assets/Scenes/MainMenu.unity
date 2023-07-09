@@ -932,12 +932,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '"Space X-plorers" Kevin MacLeod (incompetech.com)
-
-    Licensed under
-    Creative Commons: By Attribution 4.0 License
-
-    http://creativecommons.org/licenses/by/4.0/'
+  m_text: "EVA \u2013 \u5931\u671B\u3057\u305F [Synthwave] \U0001F3B5 from Royalty
+    Free Planet\u2122\nhttps://joshlis.bandcamp.com\nPromoted by @RoyaltyFreePlanet
+    - https://royaltyfreeplanet.com\nCreative Commons Attribution 3.0\nhttp://bit.ly/RFP_CClicense"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -46,6 +46,10 @@ public class SphereHit : MonoBehaviour
                 print(ScoreTracker.Instance.ballsJustHitIn);
                 ScoreTracker.Instance.PlayShot();
             }
+            else
+            {
+                ScoreTracker.Instance.CueBallSunk();
+            }
         }
     }
 
