@@ -18,20 +18,20 @@ public class CueHit : MonoBehaviour
 
     public GameObject cueBall; //our pivot
     public float hitAngle = 0f;
-    public float tolerance = 25f;
+    public float tolerance = 10f;
     Vector3 dir;
 
     float t0;
     float pauseTime = 1f;
-    float aimTime = 0.5f;
-    float hitTime = 0.07f;
+    float aimTime = 0.3f;
+    float hitTime = 0.2f;
     float restTime = 2f;
-    float fadeSpeed = 1f;
-    float hitSpeed = 20f;
+    float fadeSpeed = 2f;
+    float hitSpeed = 25f;
 
     public Renderer renderer;
-    public GameObject stickGo;
-
+    public GameObject stick;
+    public GameObject tip;
 
     void Start()
     {
@@ -40,8 +40,8 @@ public class CueHit : MonoBehaviour
 
     void Update()
     {
-        Debug.DrawRay(transform.position, (cueBall.transform.position - transform.position).normalized,
-            Color.red, 1);
+        //Debug.DrawRay(transform.position, (cueBall.transform.position - transform.position).normalized,
+        //    Color.red, 1);
 /*
         if (Input.GetKeyDown("space"))
         {
@@ -62,27 +62,31 @@ public class CueHit : MonoBehaviour
     {
         if (isFadingIn)
         {
+            //TODO make this start once the cue ball has stopped
+            transform.position = cueBall.transform.position - new Vector3(6f, 0f, 6f);
+            transform.LookAt(cueBall.transform.position);
             Fade("in");
+            //Debug.DrawRay(transform.position, cueBall.transform.position - transform.position, Color.red, 10);
         }
         else if (isDeciding)
         {
             hitAngle = UnityEngine.Random.Range(0, 360);
             isDeciding = false;
             isRotating = true;
-            Debug.Log("ANGLE: " + hitAngle);
+            //Debug.Log("ANGLE: " + hitAngle);
         }
         else if (isRotating)
         {
-            Debug.Log("CurAngle: " + stickGo.transform.rotation.eulerAngles.y);
-            if (stickGo.transform.rotation.eulerAngles.y % 360 > hitAngle - tolerance &&
-                stickGo.transform.rotation.eulerAngles.y % 360 < hitAngle + tolerance)
+            Debug.Log("CurAngle: " + transform.rotation.eulerAngles.y);
+            if (transform.rotation.eulerAngles.y % 360 > hitAngle - tolerance &&
+                transform.rotation.eulerAngles.y % 360 < hitAngle + tolerance)
             {
                 isRotating = false;
                 isPausing = true;
                 t0 = Time.time;
             }
 
-            stickGo.transform.RotateAround(cueBall.transform.position, Vector3.up, 50 * Time.deltaTime);
+            transform.RotateAround(cueBall.transform.position, Vector3.up, 50 * Time.deltaTime);
         }
         else if (isPausing)
         {
@@ -91,26 +95,25 @@ public class CueHit : MonoBehaviour
                 isPausing = false;
                 isAiming = true;
                 t0 = Time.time;
+                dir = (transform.position - cueBall.transform.position).normalized;
+                Debug.DrawRay(transform.position, dir, Color.cyan, 10);
             }
         }
         else if (isAiming) {
-            
+
             if (Time.time - t0 > aimTime)
             {
                 isAiming = false;
                 isShooting = true;
                 t0 = Time.time;
+                dir = (cueBall.transform.position - transform.position).normalized;
             }
 
-            //TODO wrong direction
-            dir = (cueBall.transform.position - stickGo.transform.position).normalized;
-            stickGo.transform.Translate((stickGo.transform.TransformPoint(stickGo.transform.position) 
-                - stickGo.transform.TransformPoint(cueBall.transform.position)).normalized * 5 * Time.deltaTime);
+            transform.Translate(dir * 5 * Time.deltaTime, Space.World);
         }
         else if (isShooting)
         {
-            stickGo.transform.Translate((stickGo.transform.TransformPoint(cueBall.transform.position) 
-                - stickGo.transform.TransformPoint(stickGo.transform.position)).normalized * hitSpeed * Time.deltaTime);
+            transform.Translate(dir.normalized * hitSpeed * Time.deltaTime, Space.World);
             
             if (Time.time - t0 > hitTime)
             {
@@ -143,6 +146,7 @@ public class CueHit : MonoBehaviour
     {
         if (mode == "out")
         {
+            gameObject.GetComponent<Collider>().isTrigger = true;
             var col = renderer.material.color;
             float fadeAmount = col.a - (fadeSpeed * Time.deltaTime);
             var newCol = new Color(col.r, col.g, col.b, fadeAmount);
@@ -151,11 +155,11 @@ public class CueHit : MonoBehaviour
             if (col.a <= 0)
             {
                 isFadingOut = false;
-                gameObject.transform.position += new Vector3(0f, 2f, 0f);
             }
         }
         else if (mode == "in")
         {
+            gameObject.GetComponent<Collider>().isTrigger = false;
             var col = renderer.material.color;
             float fadeAmount = col.a + (fadeSpeed * Time.deltaTime);
             var newCol = new Color(col.r, col.g, col.b, fadeAmount);
@@ -164,7 +168,6 @@ public class CueHit : MonoBehaviour
             if (col.a >= 1)
             {
                 isFadingIn = false;
-                gameObject.transform.position -= new Vector3(0f, 2f, 0f);
                 isDeciding = true;
             }
         }
