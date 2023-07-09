@@ -89,7 +89,7 @@ public class SphereHit : MonoBehaviour
             Vector3 newScale = Vector3.Lerp(gameObject.transform.localScale, Vector3.one, Time.deltaTime);
             gameObject.transform.localScale += fadeSpeed * Time.deltaTime * Vector3.one;
 
-            Debug.Log("Scalex: " + gameObject.transform.localScale);
+            //Debug.Log("Scalex: " + gameObject.transform.localScale);
             if (gameObject.transform.localScale.x >= 0.4)
             {
                 isFadingIn = false;

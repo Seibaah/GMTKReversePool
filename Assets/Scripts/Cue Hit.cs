@@ -37,6 +37,8 @@ public class CueHit : MonoBehaviour
     public Vector3 lrDir;
     public Spawner sp;
 
+    public List<GameObject> pockets= new List<GameObject>();
+
     void Start()
     {
         isFadingIn = true;
@@ -73,7 +75,15 @@ public class CueHit : MonoBehaviour
         }
         else if (isDeciding)
         {
-            hitAngle = UnityEngine.Random.Range(0, 359);
+            var pocketChoice = UnityEngine.Random.Range(0, 6);
+            var dirBallPocket = pockets[ pocketChoice ].transform.position - cueBall.transform.position;
+            float angle = Vector3.Angle(dirBallPocket, Vector3.forward);
+            Debug.DrawRay(cueBall.transform.position, Vector3.forward, Color.gray, 10);
+            Debug.DrawRay(cueBall.transform.position, dirBallPocket, Color.red, 10);
+            Debug.Log("Pocket: " + pocketChoice);
+            Debug.Log("Angle P:" + angle);
+            hitAngle= angle;
+            //hitAngle = UnityEngine.Random.Range(0, 359);
             isDeciding = false;
             isRotating = true;
             Debug.Log("ANGLE: " + hitAngle);
@@ -118,7 +128,7 @@ public class CueHit : MonoBehaviour
                 t0 = Time.time;
             }
 
-            transform.RotateAround(cueBall.transform.position, Vector3.up, 50 * Time.deltaTime);
+            transform.RotateAround(cueBall.transform.position, Vector3.up, 100 * Time.deltaTime);
         }
         else if (isPausing)
         {
