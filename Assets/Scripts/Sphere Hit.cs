@@ -7,7 +7,7 @@ public class SphereHit : MonoBehaviour
     public float hitPower = 1100f;
     public bool wasHit = true;
     public Material mat;
-    float fadeSpeed = 2f;
+    float fadeSpeed = 1/2f;
     public bool isFadingOut;
     public bool isFadingIn;
     public bool isInPocket;
@@ -69,27 +69,26 @@ public class SphereHit : MonoBehaviour
         if (mode == "out")
         {
             gameObject.GetComponent<Collider>().isTrigger = true;
-            var col = mat.color;
-            float fadeAmount = col.a - (fadeSpeed * Time.deltaTime);
-            var newCol = new Color(col.r, col.g, col.b, fadeAmount);
+            Vector3 newScale = Vector3.Lerp(gameObject.transform.localScale, Vector3.zero, Time.deltaTime);
+            gameObject.transform.localScale -= fadeSpeed * Time.deltaTime * Vector3.one;
 
-            mat.color = newCol;
-            if (col.a <= 0)
+            if (gameObject.transform.localScale.x <= 0f)
             {
                 isFadingOut = false;
+                gameObject.transform.localScale = Vector3.zero;
             }
         }
         else if (mode == "in")
         {
             gameObject.GetComponent<Collider>().isTrigger = false;
-            var col = mat.color;
-            float fadeAmount = col.a + (fadeSpeed * Time.deltaTime);
-            var newCol = new Color(col.r, col.g, col.b, fadeAmount);
+            Vector3 newScale = Vector3.Lerp(gameObject.transform.localScale, Vector3.one, Time.deltaTime);
+            gameObject.transform.localScale += fadeSpeed * Time.deltaTime * Vector3.one;
 
-            mat.color = newCol;
-            if (col.a >= 1)
+            Debug.Log("Scalex: " + gameObject.transform.localScale);
+            if (gameObject.transform.localScale.x >= 0.4)
             {
                 isFadingIn = false;
+                gameObject.transform.localScale = Vector3.one * 0.4f;
             }
         }
     }
