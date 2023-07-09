@@ -19,6 +19,7 @@ public class TutorialMenu : MonoBehaviour
         else
         {
             tutorialMenu.SetActive(false);
+            PlayerPrefs.SetInt("HasDoneTutorial", 0);
         }
     }
 

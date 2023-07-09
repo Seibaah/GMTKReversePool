@@ -81,7 +81,7 @@ public class ScoreTracker : MonoBehaviour
         if (timerSlider.value <= 0.0f)
         {
             Multiplier = 1;
-            if (numLives >= 2)
+            if (numLives >= 1)
             {
                 timerSlider.value = 1f;
                 ballsJustHitIn = 0;
