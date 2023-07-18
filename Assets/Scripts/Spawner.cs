@@ -33,6 +33,9 @@ public class Spawner : MonoBehaviour
                 balls[i].GetComponent<SphereHit>().isFadingIn = true;
                 balls[i].GetComponent<Collider>().enabled = true;
                 balls[i].GetComponent<SphereHit>().isInPocket = false;
+                var rb = balls[i].GetComponent<Rigidbody>();
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
         }
     }

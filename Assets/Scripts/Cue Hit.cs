@@ -26,10 +26,10 @@ public class CueHit : MonoBehaviour
     float t0;
     float pauseTime = 1f;
     float aimTime = 0.3f;
-    float hitTime = 0.2f;
+    float hitTime = 0.3f;
     float restTime = 2f;
     float fadeSpeed = 2f;
-    float hitSpeed = 25f;
+    float hitSpeed = 15f;
 
     public Renderer renderer;
     public GameObject stick;
@@ -81,16 +81,16 @@ public class CueHit : MonoBehaviour
             float angle = Vector3.Angle(dirBallPocket, Vector3.forward);
             Debug.DrawRay(cueBall.transform.position, Vector3.forward, Color.gray, 10);
             Debug.DrawRay(cueBall.transform.position, dirBallPocket, Color.red, 10);
-            Debug.Log("Pocket: " + pocketChoice);
-            Debug.Log("Angle P:" + angle);
+            //Debug.Log("Pocket: " + pocketChoice);
+            //Debug.Log("Angle P:" + angle);
             hitAngle = angle;
             //hitAngle = UnityEngine.Random.Range(0, 359);
             isDeciding = false;
             isRotating = true;
-            Debug.Log("ANGLE: " + hitAngle);
+            //Debug.Log("ANGLE: " + hitAngle);
 
             int quadrant = (int)(hitAngle / 90);
-            Debug.Log("Quadrant " + quadrant);
+            //Debug.Log("Quadrant " + quadrant);
 
             float x, z;
             if (quadrant == 0)

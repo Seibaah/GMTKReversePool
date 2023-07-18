@@ -69,7 +69,7 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Gameplay Test");
+        SceneManager.LoadScene("Mobile Gameplay Test");
     }
 
     public void MusicVolumeSlider(float volume)

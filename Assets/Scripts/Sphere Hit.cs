@@ -43,7 +43,7 @@ public class SphereHit : MonoBehaviour
             if (gameObject.transform.name != "Cue Ball")
             {
                 ScoreTracker.Instance.ballsJustHitIn += 1;
-                print(ScoreTracker.Instance.ballsJustHitIn);
+                //print(ScoreTracker.Instance.ballsJustHitIn);
                 ScoreTracker.Instance.PlayShot();
             }
             else
@@ -62,7 +62,10 @@ public class SphereHit : MonoBehaviour
         }
         else if (gameObject.GetComponent<Rigidbody>().velocity.sqrMagnitude < 1f)
         {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            var rb = gameObject.GetComponent<Rigidbody>();
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+
             hitPower = 1100f;
         }
 
@@ -96,7 +99,7 @@ public class SphereHit : MonoBehaviour
             Vector3 newScale = Vector3.Lerp(gameObject.transform.localScale, Vector3.one, Time.deltaTime);
             gameObject.transform.localScale += fadeSpeed * Time.deltaTime * Vector3.one;
 
-            Debug.Log("Scalex: " + gameObject.transform.localScale);
+            //Debug.Log("Scalex: " + gameObject.transform.localScale);
             if (gameObject.transform.localScale.x >= 0.4)
             {
                 isFadingIn = false;

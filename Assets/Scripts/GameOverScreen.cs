@@ -20,7 +20,7 @@ public class GameOverScreen : MonoBehaviour
     public void RestartButton()
     {
         IsGameOver = false;
-        SceneManager.LoadScene("Gameplay Test");
+        SceneManager.LoadScene("Mobile Gameplay Test");
     }
     
     public void ExitButton()
